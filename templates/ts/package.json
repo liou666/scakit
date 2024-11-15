@@ -1,0 +1,31 @@
+{
+  "name": "embadding",
+  "version": "1.0.0",
+  "description": "",
+  "author": "liou",
+  "license": "ISC",
+  "keywords": [],
+  "main": "./lib/index.js",
+  "files": [
+    "./bin/*",
+    "./lib/*"
+  ],
+  "typings": "./lib/index.d.ts",
+  "scripts": {
+    "dev": "nodemon --watch src --exec tsx src/index.ts",
+    "build": "tsup src/index.ts --minify --dts --format cjs --out-dir lib",
+    "lint": "eslint .",
+    "prepublish": "npm run build",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@liou666/eslint-config-flat": "^2.0.1",
+    "@types/node": "^22.9.0",
+    "eslint": "^9.14.0",
+    "nodemon": "^3.1.7",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  }
+}
