@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-clap = { version = "4.1", features = ["derive"] }
-inquire = "0.6"
+inquire = "0.6"  
+thiserror = "1.0"  
+colored = "2.0"  
