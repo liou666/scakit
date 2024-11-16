@@ -4,7 +4,6 @@
 
 [![Crates.io](https://img.shields.io/crates/v/scakit.svg)](https://crates.io/crates/scakit)  
 [![Downloads](https://img.shields.io/crates/d/scakit.svg)](https://crates.io/crates/scakit)  
-[![License](https://img.shields.io/crates/l/scakit.svg)](LICENSE)  
 
 ✨ A modern project scaffolding tool written in Rust  
 </div>  
@@ -26,7 +25,7 @@ cargo install scakit
 
 ## Usage
 
-You can use either command, both commands provide the same functionality.
+You can use either command, oth commands provide the same functionality.
 
 ```bash
 scakit  # full name  
