@@ -1,26 +1,19 @@
 [package]
 name = "scakit"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Liou <liou666@126.com>"]  
 description = "A modern project scaffolding tool"  
 license = "MIT"  
 homepage = "https://github.com/liou666/scakit"  
 repository = "https://github.com/liou666/scakit"  
-include = [  
-    "templates/**/*",  
-    "src/**/*",  
-    "Cargo.toml",  
-    "README.md",  
-    "LICENSE",  
-]  
 
 
 [dependencies]
 inquire = "0.6"  
 thiserror = "1.0"  
 colored = "2.0"  
-
+include_dir = "0.7.3"
 
 
 [[bin]]  

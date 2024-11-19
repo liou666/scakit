@@ -1,10 +1,8 @@
-use std::{path::Path, process::Command};
-
 use crate::{
     error::{template_error::Result, template_error::TemplateError},
     templates::project_template::ProjectTemplate,
-    utils::fs_utils,
 };
+use std::{fmt::Display, path::Path, process::Command};
 
 pub struct ProjectGenerator {
     template: ProjectTemplate,
@@ -20,17 +18,18 @@ impl ProjectGenerator {
     }
 
     pub fn create_project(&self) -> Result<()> {
-        let template_dir = Path::new(self.template.get_template_dir());
         let target_path = Path::new(&self.project_name);
 
-        self.validate_paths(template_dir, target_path)?;
+        if target_path.exists() {
+            return Err(TemplateError::DirectoryExists(self.project_name.clone()));
+        }
 
-        fs_utils::create_directory(target_path)?;
-        fs_utils::copy_template_files(template_dir, target_path)?;
-
-        // self.initialize_project(target_path)?;
+        self.template
+            .create_project_files(&target_path)
+            .map_err(|e| TemplateError::Io(e))?;
 
         println!("✨ Project '{}' created successfully!", self.project_name);
+
         Ok(())
     }
 
