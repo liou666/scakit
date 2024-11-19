@@ -1,4 +1,4 @@
-use include_dir::{include_dir, Dir};
+use include_dir::{include_dir, Dir, DirEntry};
 use std::path::Path;
 use std::{fs, io};
 #[derive(Debug, Clone)]
@@ -26,27 +26,63 @@ impl ProjectTemplate {
         }
     }
 
+    fn copy_dir_contents(template_dir: &Dir, target_dir: &Path) -> io::Result<()> {
+        for entry in template_dir.entries() {
+            match entry {
+                DirEntry::Dir(subdir) => {
+                    // remove the template directory from the path
+                    let relative_path = subdir
+                        .path()
+                        .strip_prefix(template_dir.path())
+                        .unwrap_or(subdir.path());
+                    let target_path = target_dir.join(relative_path);
+                    fs::create_dir_all(&target_path)?;
+
+                    for entry in subdir.entries() {
+                        match entry {
+                            DirEntry::Dir(nested_dir) => {
+                                let nested_target = target_dir.join(
+                                    nested_dir
+                                        .path()
+                                        .strip_prefix(template_dir.path())
+                                        .unwrap_or(nested_dir.path()),
+                                );
+                                fs::create_dir_all(&nested_target)?;
+                                for file in nested_dir.files() {
+                                    let file_target =
+                                        nested_target.join(file.path().file_name().unwrap());
+                                    fs::write(file_target, file.contents())?;
+                                }
+                            }
+                            DirEntry::File(file) => {
+                                let file_target =
+                                    target_path.join(file.path().file_name().unwrap());
+                                fs::write(file_target, file.contents())?;
+                            }
+                        }
+                    }
+                }
+                DirEntry::File(file) => {
+                    let target_path = target_dir.join(file.path().file_name().unwrap());
+                    fs::write(target_path, file.contents())?;
+                }
+            }
+        }
+        Ok(())
+    }
+
     pub fn create_project_files(&self, target_dir: &Path) -> io::Result<()> {
         let template_name = match self {
             ProjectTemplate::TypeScript => "ts",
         };
 
         if let Some(template_dir) = TEMPLATES_DIR.get_dir(template_name) {
-            for file in template_dir.files() {
-                let relative_path = file.path();
-                let target_file_path = target_dir.join(relative_path);
-
-                if let Some(parent) = target_file_path.parent() {
-                    fs::create_dir_all(parent)?;
-                }
-
-                fs::write(&target_file_path, file.contents())?;
-            }
+            fs::create_dir_all(target_dir)?;
+            Self::copy_dir_contents(template_dir, target_dir)?;
         }
 
         Ok(())
     }
-
     pub fn available_templates() -> Vec<&'static str> {
         vec!["TypeScript"]
     }
